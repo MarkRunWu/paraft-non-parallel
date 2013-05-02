@@ -27,7 +27,11 @@ public:
     float* GetMaskPointer()  { return pMaskCurrent; }
     float* GetTFOpacityMap() { return pTfMap; }
 
-    void SaveExtractedFeatures(int index) { featureSequence[index] = currentFeaturesHolder; }
+    void SaveExtractedFeatures(int index) { featureSequence[index] = currentFeaturesHolder;
+                                    #ifdef _DEBUG
+                                            cout << "feature count: " << currentFeaturesHolder.size() << endl;
+                                    #endif
+                                          }
 
     // accessor
     void SetDataPointer(float* pData) { pVolumeData = pData; }

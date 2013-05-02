@@ -1,7 +1,7 @@
 #ifndef CONSTS_H
 #define CONSTS_H
 
-#include <hash_map.h>
+#include <hash_map>
 #include <fstream>
 #include <iostream>
 #include <cmath>

@@ -40,22 +40,26 @@ void DataManager::InitTFSettings(string filename) {
 void DataManager::LoadDataSequence(const Metadata &meta, const int timestep) {
     blockDim = meta.volumeDim;
     volumeSize = blockDim.Product();
-
+#ifdef _DEBUG
+    cout << "delete data not within t-2 ~ t+2" << endl;
+#endif
     // delete if data is not within [t-2, t+2] of current timestep t
-    for (DataSequence::iterator it = dataSequence.begin(); it != dataSequence.end(); it++) {
+    for (DataSequence::iterator it = dataSequence.begin(); it != dataSequence.end(); ) {
         if (it->first < timestep-2 || it->first > timestep+2) {
             delete [] it->second;
-            dataSequence.erase(it);
-        }
+            it = dataSequence.erase(it);
+        }else it++;
     }
-
+#ifdef _DEBUG
+    cout << "finish delete data" << endl;
+#endif
     for (int t = timestep-2; t <= timestep+2; t++) {
         if (t < meta.start || t > meta.end || dataSequence[t] != NULL) {
             continue;
         }
 
         char timestamp[21];  // up to 64-bit #
-        sprintf(timestamp, "%08d", t);
+        sprintf_s(timestamp, "%02d", t);
         string fpath = meta.path + "/" + meta.prefix + timestamp + "." + meta.surfix;
 
         ifstream inf(fpath.c_str(), ios::binary);
