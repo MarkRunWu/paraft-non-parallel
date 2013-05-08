@@ -34,6 +34,8 @@ void DataManager::InitTFSettings(string filename) {
     tfResolution = (int)tfResF;
     pTFOpacityMap = new float[tfResolution];
     inf.read(reinterpret_cast<char*>(pTFOpacityMap), tfResolution*sizeof(float));
+    for(int i = 0 ; i != tfResolution ; i++)
+        cout << pTFOpacityMap[i] << endl;
     inf.close();
 }
 
