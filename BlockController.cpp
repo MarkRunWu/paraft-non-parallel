@@ -23,6 +23,7 @@ void BlockController::InitParameters(const Metadata &meta) {
 void BlockController::TrackForward(const Metadata &meta) {
     pDataManager->LoadDataSequence(meta, currentTimestep);
     pFeatureTracker->ExtractAllFeatures();
-    pFeatureTracker->TrackFeature(pDataManager->GetDataPointer(currentTimestep), FT_FORWARD, FT_DIRECT);
+    //pFeatureTracker->TrackFeature(pDataManager->GetDataPointer(currentTimestep), FT_FORWARD, FT_DIRECT);
+    pFeatureTracker->TrackFeature(pDataManager->GetDataPointer(currentTimestep), FT_FORWARD, FT_LINEAR);
     pFeatureTracker->SaveExtractedFeatures(currentTimestep);
 }

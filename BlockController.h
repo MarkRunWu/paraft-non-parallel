@@ -18,18 +18,29 @@ public:
 
     void exportFeature(int index){
         fstream fout;
-
-        fout.open( "tmp.dat" , fstream::out | fstream::binary );
+        char file_hdr[20],file_dat[20];
+        sprintf( file_hdr , "feature%d.hdr" , index );
+        sprintf( file_dat , "feature%d.dat" , index );
+        fout.open( file_dat , fstream::out | fstream::binary );
         Vector3i dim = pDataManager->GetBlockDimension();
+        FILE* check_hdr = fopen( file_hdr , "w" );
+        fprintf( check_hdr , "%d %d %d BYTE" , dim.x , dim.y , dim.z );
+        fclose( check_hdr );
+
         unsigned char* feature_volume = new unsigned char[dim.x * dim.y * dim.z];
 
         vector<Feature>* pFeature = pFeatureTracker->GetFeatureVectorPointer(index);
+        float max_value = 255;
+        float min_value = 0;
+
+        float range = max_value - min_value;
         for( size_t i = 0 ; i != (*pFeature).size() ; i++ ){
             list<Vector3i> voxels = (*pFeature)[i].InnerPoints;
 
-            int value = (*pFeature)[i].ID;
+            unsigned char value = 255*( (*pFeature)[i].MaskValue - min_value) / range;
+
             for( list<Vector3i>::iterator it = voxels.begin() ; it != voxels.end() ; it++ )
-                feature_volume[ it->z * dim.x*dim.y + it->y * dim.x + it->x] = value;
+                feature_volume[ pFeatureTracker->GetVoxelIndex(*it) ] = value;
         }
         fout.write( (char*)feature_volume , dim.x * dim.y * dim.z );
         fout.close();

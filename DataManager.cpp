@@ -69,7 +69,7 @@ void DataManager::LoadDataSequence(const Metadata &meta, const int timestep) {
         inf.read(reinterpret_cast<char*>(dataSequence[t]), volumeSize*sizeof(float));
         inf.close();
 
-        nomalize(dataSequence[t]);
+        //nomalize(dataSequence[t])
     }
 }
 
@@ -79,6 +79,7 @@ void DataManager::nomalize(float *pData) {
         min = min < pData[i] ? min : pData[i];
         max = max > pData[i] ? max : pData[i];
     }
+    cout << "Min: " << min << "Max: " << max << endl;
     for (int i = 0; i < volumeSize; i++) {
         pData[i] = (pData[i] - min) / (max - min);
     }

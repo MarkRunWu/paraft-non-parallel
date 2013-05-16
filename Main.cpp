@@ -2,13 +2,13 @@
 
 int main (int argc, char** argv) {
     Metadata meta; {
-        meta.start      = 1;
-        meta.end        = 4;
-        meta.prefix     = "QCLOUDf";
-        meta.surfix     = "little";
-        meta.path       = "D:/cloud_data";
-        meta.tfPath     = "config.tfe";
-        meta.volumeDim  = Vector3i(500, 500, 100);
+        meta.start = 1;
+        meta.end = 4;
+        meta.prefix = "CLOUDf";
+        meta.surfix = "little";
+        meta.path = "D:/cloud_data/data";
+        meta.tfPath = "hurricane.tfe";
+        meta.volumeDim = Vector3i(500, 500, 100);
     }
 
     int currentTimestep = meta.start;
@@ -24,7 +24,9 @@ int main (int argc, char** argv) {
         pBlockController->TrackForward(meta);
         cout << currentTimestep << " done." << endl;
     }
-    pBlockController->exportFeature(2);
+    for( int i = meta.start ; i <= meta.end ; i++ ){
+        pBlockController->exportFeature(i);
+    }
     delete pBlockController;
     return 0;
 }
