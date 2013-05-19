@@ -28,6 +28,23 @@ public:
     float* GetTFOpacityMap() { return pTfMap; }
 
     void SaveExtractedFeatures(int index) { featureSequence[index] = currentFeaturesHolder;
+                                            /*char tmp_name[512];
+                                                                                FILE* pHdr;
+                                            sprintf( tmp_name , "Mask%02d.hdr" , index );
+                                                                                pHdr = fopen( tmp_name , "w" );
+                                                                                fprintf( pHdr , "%d %d %d", blockDim.x , blockDim.y , blockDim.z );
+                                                                                                                    fclose(pHdr);
+                                            sprintf( tmp_name , "Mask%02d.dat" , index );
+                                            cout << tmp_name << endl;
+                                            FILE* pOut = fopen( tmp_name , "w");
+                                                                                unsigned char tmp;
+                                                                                for( size_t i = 0 ; i != blockDim.x*blockDim.y*blockDim.z ; i++){
+                                                                                    tmp = *(pMaskCurrent + i);
+                                                                                        tmp = tmp*tmp;
+                                                                                     fwrite( &tmp , sizeof(unsigned char) , 1 , pOut );
+                                                                                }
+                                                                                fclose( pOut );
+*/
                                     #ifdef _DEBUG
                                             cout << "feature count: " << currentFeaturesHolder.size() << endl;
                                     #endif
@@ -35,7 +52,13 @@ public:
 
     // accessor
     void SetDataPointer(float* pData) { pVolumeData = pData; }
-    void SetTFOpacityMap(float* map) { pTfMap = map; }
+    void SetTFOpacityMap(float* map) { pTfMap = map;
+                                       for( int i = 0 ; i != tfRes ; i++)
+                                       {
+                                           cout << pTfMap[i] << endl;
+
+                                       }
+                                     }
     void SetTFResolution(int res) { tfRes = res; }
     void SetThresholds(float lower, float upper) { lowerThreshold = lower; upperThreshold = upper; }
     int GetVoxelIndex(const Vector3i &voxel) { return blockDim.x*blockDim.y*voxel.z+blockDim.x*voxel.y+voxel.x; }

@@ -59,7 +59,7 @@ void DataManager::LoadDataSequence(const Metadata &meta, const int timestep) {
         if (t < meta.start || t > meta.end || dataSequence[t] != NULL) {
             continue;
         }
-
+        cout << "Load data " << timestep << " from Disk" << endl;
         char timestamp[21];  // up to 64-bit #
         sprintf_s(timestamp, "%02d", t);
         string fpath = meta.path + "/" + meta.prefix + timestamp + "." + meta.surfix;

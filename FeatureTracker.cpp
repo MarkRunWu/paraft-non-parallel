@@ -54,6 +54,8 @@ void FeatureTracker::Reset() {
 }
 
 void FeatureTracker::ExtractAllFeatures() {
+    int count = 0;
+
     for (int z = 0; z < blockDim.z; z++) {
         for (int y = 0; y < blockDim.y; y++) {
             for (int x = 0; x < blockDim.x; x++) {
@@ -63,10 +65,14 @@ void FeatureTracker::ExtractAllFeatures() {
                 int tfIndex = (int)(pVolumeData[index] * (float)(tfRes-1));
                 if (pTfMap[tfIndex] >= LOW_THRESHOLD && pTfMap[tfIndex] <= HIGH_THRESHOLD) {
                     FindNewFeature(Vector3i(x,y,z));
+                    count++;
                 }
             }
         }
     }
+#ifdef _DEBUG
+    cout << "find new feature num: " << count << endl;
+#endif
 }
 
 void FeatureTracker::FindNewFeature(Vector3i point) {
@@ -98,7 +104,9 @@ void FeatureTracker::FindNewFeature(Vector3i point) {
         maskValue -= 1.0f;
         return;
     }
-
+#ifdef _DEBUG
+    cout << "region growing with: " << maskValue << " index :" << GetVoxelIndex(point) <<  endl;
+#endif
     Feature newFeature; {
         newFeature.ID               = GetVoxelIndex(centroid);
         newFeature.Centroid         = centroid;
@@ -106,7 +114,9 @@ void FeatureTracker::FindNewFeature(Vector3i point) {
         newFeature.InnerPoints      = innerPoints;
         newFeature.MaskValue        = maskValue;
     }
-
+#ifdef _DEBUG
+    cout << "new feature: " << newFeature.MaskValue << "number: " << newFeature.InnerPoints.size() << endl;
+#endif
     currentFeaturesHolder.push_back(newFeature);
     backup1FeaturesHolder = currentFeaturesHolder;
     backup2FeaturesHolder = currentFeaturesHolder;
@@ -130,16 +140,31 @@ void FeatureTracker::TrackFeature(float* pData, int direction, int mode) {
 
     for (size_t i = 0; i < currentFeaturesHolder.size(); i++) {
         Feature f = currentFeaturesHolder[i];
-
+        surfacePoints = f.SurfacePoints;
+#ifdef _DEBUG
+        cout << "before 1st feature: " << f.MaskValue << "number: " << surfacePoints.size() << endl;
+#endif
         predictRegion(i, direction, mode);
+#ifdef _DEBUG
+        cout << "before 2ed feature: " << f.MaskValue << "number: " << surfacePoints.size() << endl;
+#endif
         fillRegion(f.MaskValue);
+#ifdef _DEBUG
+        cout << "before 3st feature: " << f.MaskValue << "number: " << surfacePoints.size() << endl;
+#endif
         shrinkRegion(f.MaskValue);
+#ifdef _DEBUG
+        cout << "before 4st feature: " << f.MaskValue << "number: " << surfacePoints.size() << endl;
+#endif
         expandRegion(f.MaskValue);
 
         f.ID              = GetVoxelIndex(centroid);
         f.Centroid        = centroid;
         f.SurfacePoints   = surfacePoints;
         f.InnerPoints     = innerPoints;
+#ifdef _DEBUG
+        cout << "feature: " << f.MaskValue << "number: " << innerPoints.size() << endl;
+#endif
         currentFeaturesHolder[i] = f;
         innerPoints.clear();
     }

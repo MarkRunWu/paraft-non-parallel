@@ -9,7 +9,7 @@
 #include <vector>
 #include <list>
 
-const int FEATURE_MIN_VOXEL_NUM = 10;
+const int FEATURE_MIN_VOXEL_NUM = 100;
 
 const float LOW_THRESHOLD  = 0.2;
 const float HIGH_THRESHOLD = 1.0;
